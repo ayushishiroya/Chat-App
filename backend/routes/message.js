@@ -7,7 +7,7 @@ router.post("/create", async (req, res) => {
     return messageController.message.createMessage(req, res);
 });
 
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/upload', async (req, res) => {
     return messageController.message.uploadFile(req, res);
 });
 
