@@ -18,27 +18,26 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000", // Client URL
+        origin: "https://chat-app-nx6k.onrender.com", // Client URL
         methods: ["GET", "POST"]
     }
 })
 
-io.use((socket, next) => {
-    const token = socket.handshake.auth.token;
+// io.use((socket, next) => {
+//     const token = socket.handshake.auth.token;
 
-    if (token === null) {
-        return console.log('Authentication error: Token is missing');
-    } else {
-        next();
-    }
-});
+//     if (token === null) {
+//         return console.log('Authentication error: Token is missing');
+//     } else {
+//         next();
+//     }
+// });
 
 
 const userSockets = {};
 const activeUsers = new Set();
 
 io.on('connection', (socket) => {
-    console.log('User connected')
 
     // Basic
     // socket.emit('welcome', `welcome to the server ${socket.id}`)
@@ -79,7 +78,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on("disconnect", () => {
-        console.log('User disconnected');
         const userId = Object.keys(userSockets).find(key => userSockets[key] === socket.id);
 
         if (userId) {
