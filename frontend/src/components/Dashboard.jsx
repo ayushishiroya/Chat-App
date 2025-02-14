@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import axios from 'axios';
-import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Tab, Tabs, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Tab, Tabs, TextField, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { io } from "socket.io-client";
-import { Menu, MenuItem } from '@mui/material';
+
+const baseURL = process.env.REACT_APP_CLIENT_URI;
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -52,7 +53,7 @@ const Dashboard = () => {
 
     const socket = useMemo(() => {
         const bearerToken = JSON.parse(localStorage.getItem('token'));
-        return io("http://localhost:5000", {
+        return io(baseURL, {
             auth: {
                 token: bearerToken ?? token,
             }
@@ -144,7 +145,7 @@ const Dashboard = () => {
 
     const handleCreateRoom = async () => {
         if (roomName) {
-            await axios.post("http://localhost:5000/api/room/create", { name: roomName })
+            await axios.post(`${baseURL}/api/room/create`, { name: roomName })
                 .then(res => {
                     if (res.data.isSuccess) {
                         setRoomName('');
@@ -165,7 +166,7 @@ const Dashboard = () => {
     }
 
     const getRoomById = async (id) => {
-        await axios.get(`http://localhost:5000/api/room?id=${id}`)
+        await axios.get(`${baseURL}/api/room?id=${id}`)
             .then(res => {
                 if (res.data.isSuccess) {
                     setRoomDetails(res.data.record);
@@ -177,7 +178,7 @@ const Dashboard = () => {
     }
 
     const getAllGroupMessages = async (id) => {
-        await axios.get(`http://localhost:5000/api/message/get/by-room?room=${id}`)
+        await axios.get(`${baseURL}/api/message/get/by-room?room=${id}`)
             .then(res => {
                 if (res.data.isSuccess) {
                     setGroupMessageList(res.data.records);
@@ -190,7 +191,7 @@ const Dashboard = () => {
 
     // Personal
     const getAllUsers = async (id) => {
-        await axios.get(`http://localhost:5000/api/user/get/all?id=${id}`)
+        await axios.get(`${baseURL}/api/user/get/all?id=${id}`)
             .then(res => {
                 if (res.data.isSuccess) {
                     setUserList(res.data.records);
@@ -202,7 +203,7 @@ const Dashboard = () => {
     }
 
     const getUserDetails = async (id) => {
-        await axios.get(`http://localhost:5000/api/user?id=${id}`)
+        await axios.get(`${baseURL}/api/user?id=${id}`)
             .then(res => {
                 if (res.data.isSuccess) {
                     setUserDetails(res.data.record);
@@ -215,7 +216,7 @@ const Dashboard = () => {
     }
 
     const getUserMessages = async (sender, receiver) => {
-        await axios.get(`http://localhost:5000/api/message?sender=${sender}&receiver=${receiver}`)
+        await axios.get(`${baseURL}/api/message?sender=${sender}&receiver=${receiver}`)
             .then(res => {
                 if (res.data.isSuccess) {
                     setMessageList(res.data.records);
@@ -230,7 +231,7 @@ const Dashboard = () => {
         e.preventDefault();
 
         if (message) {
-            await axios.post("http://localhost:5000/api/message/create", { text: message, sender: loginUserDetails._id, file, ...(value === 1 ? { room: roomDetails._id } : { receiver: userDetails._id }) })
+            await axios.post(`${baseURL}/api/message/create`, { text: message, sender: loginUserDetails._id, file, ...(value === 1 ? { room: roomDetails._id } : { receiver: userDetails._id }) })
                 .then(res => {
                     if (res.data.isSuccess) {
                         if (value === 1) {

@@ -14,7 +14,7 @@ const SignUp = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (Object.values(values)?.every(i => i)) {
-            await axios.post("http://localhost:5000/api/user/sign-up", values)
+            await axios.post(`${process.env.REACT_APP_CLIENT_URI}/api/user/sign-up`, values)
                 .then(res => {
                     if (res.data.isSuccess) {
                         setValues({ name: "", email: "", phone: "", username: '', password: '' })

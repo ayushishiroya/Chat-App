@@ -14,7 +14,7 @@ const SignIn = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (Object.values(values)?.every(i => i)) {
-            await axios.post("http://localhost:5000/api/user/sign-in", values)
+            await axios.post(`${process.env.REACT_APP_CLIENT_URI}/api/user/sign-in`, values)
                 .then(res => {
                     if (res.data.isSuccess) {
                         setValues({ username: '', password: '' })
